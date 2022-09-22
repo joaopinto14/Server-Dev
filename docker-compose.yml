@@ -1,0 +1,24 @@
+# Version: 1.0
+
+services:
+
+    web:
+        container_name: "Web"
+        build: "./web"
+        restart: "unless-stopped"
+        ports:
+            - "80:80"
+        volumes:
+            - "./web/templates:/etc/nginx/templates"
+            - "./web/www:/var/www:rw"
+        depends_on:
+            - "php"
+    
+    php:
+        container_name: "Php"
+        build: "./php"
+        restart: "always"
+        volumes:
+            - "./web/www:/var/www"
+        ports:
+            - "9000:9000/tcp"

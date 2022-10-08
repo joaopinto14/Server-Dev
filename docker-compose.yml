@@ -1,4 +1,4 @@
-# Version: 1.0
+# Version: 2.0
 
 services:
 
@@ -22,3 +22,35 @@ services:
             - "./web/www:/var/www"
         ports:
             - "9000:9000/tcp"
+        depends_on:
+            - "db"
+            - "redis"
+
+    db:
+        container_name: "Db"
+        image: "mariadb:latest"
+        restart: "unless-stopped"
+        environment:
+            MYSQL_ROOT_PASSWORD: "root"
+        volumes:
+            - "./db/scripts:/docker-entrypoint-initdb.d"
+            - "db:/var/lib/mysql"
+
+    phpmyadmin:
+        container_name: "PhpMyAdmin"
+        image: "phpmyadmin:latest"
+        restart: "unless-stopped"
+        ports:
+            - "8888:80"
+        depends_on:
+            - "db"
+    
+    redis:
+        container_name: "Redis"
+        image: "redis:latest"
+        restart: "unless-stopped"
+        ports:
+            - "6379:6379"
+
+volumes:
+    db:

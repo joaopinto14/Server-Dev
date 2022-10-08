@@ -8,15 +8,17 @@ Everything you need to set up a development server on your desktop.
 
 ### Functionalities:
 
-- Web Server
-- Database
-- PhpMyAdmin
-- Redis Server
+- [x] Web Server
+- [x] Php
+- [x] Database
+- [x] PhpMyAdmin
+- [x] Redis Server
 
 
 ### TODO:
 
 - [ ] Otimizar o processo de utilização.
+- [ ] Adicionar Node
 
 
 ### How to use:

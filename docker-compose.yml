@@ -16,8 +16,12 @@ services:
     
     php:
         container_name: "Php"
-        build: "./php"
-        restart: "always"
+        build: 
+            args:
+                user: "joao"
+            context: "./php"
+            dockerfile: "Dockerfile"
+        restart: "unless-stopped"
         volumes:
             - "./web/www:/var/www"
         ports:

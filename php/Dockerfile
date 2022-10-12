@@ -1,7 +1,7 @@
 # Version: 1.0
 
 # Base Image
-FROM php:8.1-fpm
+FROM php:fpm
 
 # Update packages
 RUN apt-get clean && apt-get update && apt-get upgrade -y

@@ -1,5 +1,5 @@
 # Version: 2.0
-
+version: "3.9"
 services:
 
     web:
@@ -23,7 +23,7 @@ services:
             dockerfile: "Dockerfile"
         restart: "unless-stopped"
         volumes:
-            - "./web/www:/var/www"
+            - "./web/www:/var/www:rw"
         ports:
             - "9000:9000/tcp"
         depends_on:
@@ -35,7 +35,7 @@ services:
         image: "mariadb:latest"
         restart: "unless-stopped"
         environment:
-            MYSQL_ROOT_PASSWORD: "root"
+            MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
         volumes:
             - "./db/scripts:/docker-entrypoint-initdb.d"
             - "db:/var/lib/mysql"
@@ -55,6 +55,7 @@ services:
         restart: "unless-stopped"
         ports:
             - "6379:6379"
+        command: "redis-server --appendonly yes  --requirepass ${REDIS_PASSWORD}"
 
 volumes:
     db:

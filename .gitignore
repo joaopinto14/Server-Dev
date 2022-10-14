@@ -1,6 +1,6 @@
 # Version: 1.0
 
-# Folders
 
-web/templates
-web/www
+# Files
+
+.env

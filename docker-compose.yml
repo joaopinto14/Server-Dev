@@ -18,7 +18,7 @@ services:
         container_name: "Php"
         build: 
             args:
-                user: "joao"
+                user: "${PHP_USER}"
             context: "./php"
             dockerfile: "Dockerfile"
         restart: "unless-stopped"

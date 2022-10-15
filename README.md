@@ -34,5 +34,14 @@ Everything you need to set up a development server on your desktop.
 
     Examples:
 
+     1º
+
         docker-compose exec -w /var/www/server-dev php npm run dev
+
+    2º
+           
         docker-compose exec -w /var/www/server-dev php composer install
+
+    3º
+
+        docker-compose exec -w /var/www/server-dev php php artisan key:generate

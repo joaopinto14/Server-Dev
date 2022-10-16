@@ -2,7 +2,7 @@
 
 Everything you need to set up a development web server on your desktop.
 
-<!-- 
+
 ## Functionalities:
 
 - [x] Web Server {nginx}
@@ -12,6 +12,10 @@ Everything you need to set up a development web server on your desktop.
 - [x] Redis Server
 
 
+## Requirements:
+
+- Docker 
+
 ## Setup
 
 1. Download the latest stable release [here](https://github.com/joaopinto14/Server-Dev/releases/latest)
@@ -19,78 +23,92 @@ Everything you need to set up a development web server on your desktop.
 
 2. Extract the downloaded file:
 
-    ```bash 
+    ``` 
     unzip Server-Dev-Stable.zip
     ```
     OR
-    ```bash 
+    ``` 
     tar -xf Server-Dev-Stable.tar.gz
     ```
 
 3. Enter into the Server-Dev folder:
 
-    ```bash 
+    ```
     cd Server-Dev-Stable
     ```
 
 4. Copy the .env.example file to a .env file:
 
-    ```bash 
+    ``` 
     cp .env.example .env
     ```
     Make the adjustments you need, to match your needs.
     
     Info: PHP_USER variable is to insert the user name which will edit the files created inside the containers
 
-5. Configuração NGINX
+5. Configure Virtual Host
 
-6. Criar/Instalar projeto na pasta www -->
+    Place the virtual host configuration files in the templates folder located in the web directory
 
+    Put the files with the following name:
 
+        {name}.conf.template
 
+6. Placement of web projects
 
+    The placement of projects is in the www folder located in the web directory
 
+7. Start the containers
 
-### List of Requirements:
+    ```
+    docker-compose up -d
+    ```
+    
 
-- Docker
+## Execution of Commands
 
-### Functionalities:
+- Composer
 
-- [x] Web Server {nginx}
-- [x] Php {php, composer, nodejs}
-- [x] Database {mariadb}
-- [x] PhpMyAdmin
-- [x] Redis Server
+    ```
+    docker-compose exec -w /project/path/inside/container php composer {install;update;...}
+    ```
+- NodeJS
 
+    ```
+    docker-compose exec -w /project/path/inside/container php npm {install;run dev;...}
+    ```
+    ```
+    docker-compose exec -w /project/path/inside/container php npx {install;update;...}
+    ```
 
-### TODO:
+- Others
 
-- [ ] Otimizar o processo de utilização.
+    ```
+    docker-compose exec -w /project/path/inside/container {container} {command}
+    ```
 
+## Useful Sources
 
-### How to use:
+- [Nginx](https://www.nginx.com/)
 
-- In the directory "web/templates" place the conf files with the following name "xxxx.conf.template"
+- [Nginx-Docker](https://hub.docker.com/_/nginx)
 
-- In the "web/www" directory place the projects
+- [PHP](https://www.php.net/)
 
-- To access the PhpMyAdmin container with the following address: http://localhost:8888/
+- [PHP-Docker](https://hub.docker.com/_/php)
 
-- To run commands  inside containers: 
- 
-        docker-compose exec -w {project/path/into/container} {container} {command}
+- [Composer](https://getcomposer.org/)
 
-    Examples:
+- [NodeJS](https://nodejs.org/)
 
-     1º
+- [MariaDB](https://mariadb.org/)
 
-        docker-compose exec -w /var/www/server-dev php npm run dev
+- [MariaDB-Docker](https://hub.docker.com/_/mariadb)
 
-    2º
-           
-        docker-compose exec -w /var/www/server-dev php composer install
+- [PhpMyAdmin](https://www.phpmyadmin.net/)
 
-    3º
+- [PhpMyAdmin-Docker](https://hub.docker.com/_/phpmyadmin)
 
-        docker-compose exec -w /var/www/server-dev php php artisan key:generate
+- [Redis](https://redis.io/)
+
+- [Redis-Docker](https://hub.docker.com/_/redis)

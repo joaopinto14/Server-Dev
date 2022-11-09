@@ -1,268 +1,333 @@
 /* 
-File: b_create_tables_pma.sql
+File: b_create_tables_phpmyadmin.sql
 Author: João Pinto
 GitHub: https://github.com/joaopinto14
 Description: Scripts to create tables for the pma database
-Version: 1.0
+Version: 1.1
 */
 
 
-use phpmyadmin;
+USE phpmyadmin;
 
 
--- Estrutura da tabela `pma__bookmark`
-CREATE TABLE `pma__bookmark` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `dbase` varchar(255) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `user` varchar(255) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `label` varchar(255) CHARACTER SET utf8mb3 NOT NULL DEFAULT '',
-  `query` text COLLATE utf8mb3_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='Bookmarks';
+--
+-- Table structure for table `pma__bookmark`
+--
 
-ALTER TABLE `pma__bookmark`
-  ADD PRIMARY KEY (`id`),
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+CREATE TABLE IF NOT EXISTS `pma__bookmark` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `dbase` varchar(255) NOT NULL default '',
+  `user` varchar(255) NOT NULL default '',
+  `label` varchar(255) COLLATE utf8_general_ci NOT NULL default '',
+  `query` text NOT NULL,
+  PRIMARY KEY  (`id`)
+)
+  COMMENT='Bookmarks'
+  DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
 
+-- --------------------------------------------------------
 
--- Estrutura da tabela `pma__central_columns`
-CREATE TABLE `pma__central_columns` (
-  `db_name` varchar(64) COLLATE utf8mb3_bin NOT NULL,
-  `col_name` varchar(64) COLLATE utf8mb3_bin NOT NULL,
-  `col_type` varchar(64) COLLATE utf8mb3_bin NOT NULL,
-  `col_length` text COLLATE utf8mb3_bin DEFAULT NULL,
-  `col_collation` varchar(64) COLLATE utf8mb3_bin NOT NULL,
-  `col_isNull` tinyint(1) NOT NULL,
-  `col_extra` varchar(255) COLLATE utf8mb3_bin DEFAULT '',
-  `col_default` text COLLATE utf8mb3_bin DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='Central list of columns';
+--
+-- Table structure for table `pma__column_info`
+--
 
-ALTER TABLE `pma__central_columns`
-  ADD PRIMARY KEY (`db_name`,`col_name`);
+CREATE TABLE IF NOT EXISTS `pma__column_info` (
+  `id` int(5) unsigned NOT NULL auto_increment,
+  `db_name` varchar(64) NOT NULL default '',
+  `table_name` varchar(64) NOT NULL default '',
+  `column_name` varchar(64) NOT NULL default '',
+  `comment` varchar(255) COLLATE utf8_general_ci NOT NULL default '',
+  `mimetype` varchar(255) COLLATE utf8_general_ci NOT NULL default '',
+  `transformation` varchar(255) NOT NULL default '',
+  `transformation_options` varchar(255) NOT NULL default '',
+  `input_transformation` varchar(255) NOT NULL default '',
+  `input_transformation_options` varchar(255) NOT NULL default '',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `db_name` (`db_name`,`table_name`,`column_name`)
+)
+  COMMENT='Column information for phpMyAdmin'
+  DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
 
+-- --------------------------------------------------------
 
--- Estrutura da tabela `pma__column_info`
-CREATE TABLE `pma__column_info` (
-  `id` int(5) UNSIGNED NOT NULL,
-  `db_name` varchar(64) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `table_name` varchar(64) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `column_name` varchar(64) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `comment` varchar(255) CHARACTER SET utf8mb3 NOT NULL DEFAULT '',
-  `mimetype` varchar(255) CHARACTER SET utf8mb3 NOT NULL DEFAULT '',
-  `transformation` varchar(255) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `transformation_options` varchar(255) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `input_transformation` varchar(255) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `input_transformation_options` varchar(255) COLLATE utf8mb3_bin NOT NULL DEFAULT ''
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='Column information for phpMyAdmin';
+--
+-- Table structure for table `pma__history`
+--
 
-ALTER TABLE `pma__column_info`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `db_name` (`db_name`,`table_name`,`column_name`),
-  MODIFY `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT;
+CREATE TABLE IF NOT EXISTS `pma__history` (
+  `id` bigint(20) unsigned NOT NULL auto_increment,
+  `username` varchar(64) NOT NULL default '',
+  `db` varchar(64) NOT NULL default '',
+  `table` varchar(64) NOT NULL default '',
+  `timevalue` timestamp NOT NULL default CURRENT_TIMESTAMP,
+  `sqlquery` text NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `username` (`username`,`db`,`table`,`timevalue`)
+)
+  COMMENT='SQL history for phpMyAdmin'
+  DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
 
+-- --------------------------------------------------------
 
--- Estrutura da tabela `pma__designer_pma`
-CREATE TABLE `pma__designer_pma` (
-  `username` varchar(64) COLLATE utf8mb3_bin NOT NULL,
-  `pma_data` text COLLATE utf8mb3_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='pma related to Designer';
+--
+-- Table structure for table `pma__pdf_pages`
+--
 
-ALTER TABLE `pma__designer_pma`
-  ADD PRIMARY KEY (`username`);
+CREATE TABLE IF NOT EXISTS `pma__pdf_pages` (
+  `db_name` varchar(64) NOT NULL default '',
+  `page_nr` int(10) unsigned NOT NULL auto_increment,
+  `page_descr` varchar(50) COLLATE utf8_general_ci NOT NULL default '',
+  PRIMARY KEY  (`page_nr`),
+  KEY `db_name` (`db_name`)
+)
+  COMMENT='PDF relation pages for phpMyAdmin'
+  DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
 
+-- --------------------------------------------------------
 
--- Estrutura da tabela `pma__export_templates`
-CREATE TABLE `pma__export_templates` (
-  `id` int(5) UNSIGNED NOT NULL,
-  `username` varchar(64) COLLATE utf8mb3_bin NOT NULL,
-  `export_type` varchar(10) COLLATE utf8mb3_bin NOT NULL,
-  `template_name` varchar(64) COLLATE utf8mb3_bin NOT NULL,
-  `template_data` text COLLATE utf8mb3_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='Saved export templates';
+--
+-- Table structure for table `pma__recent`
+--
 
-ALTER TABLE `pma__export_templates`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `u_user_type_template` (`username`,`export_type`,`template_name`),
-  MODIFY `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT;
+CREATE TABLE IF NOT EXISTS `pma__recent` (
+  `username` varchar(64) NOT NULL,
+  `tables` text NOT NULL,
+  PRIMARY KEY (`username`)
+)
+  COMMENT='Recently accessed tables'
+  DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
 
+-- --------------------------------------------------------
 
--- Estrutura da tabela `pma__favorite`
-CREATE TABLE `pma__favorite` (
-  `username` varchar(64) COLLATE utf8mb3_bin NOT NULL,
-  `tables` text COLLATE utf8mb3_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='Favorite tables';
+--
+-- Table structure for table `pma__favorite`
+--
 
-ALTER TABLE `pma__favorite`
-  ADD PRIMARY KEY (`username`);
+CREATE TABLE IF NOT EXISTS `pma__favorite` (
+  `username` varchar(64) NOT NULL,
+  `tables` text NOT NULL,
+  PRIMARY KEY (`username`)
+)
+  COMMENT='Favorite tables'
+  DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
 
+-- --------------------------------------------------------
 
--- Estrutura da tabela `pma__history`
-CREATE TABLE `pma__history` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `username` varchar(64) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `db` varchar(64) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `table` varchar(64) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `timevalue` timestamp NOT NULL DEFAULT current_timestamp(),
-  `sqlquery` text COLLATE utf8mb3_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='SQL history for phpMyAdmin';
+--
+-- Table structure for table `pma__table_uiprefs`
+--
 
-ALTER TABLE `pma__history`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `username` (`username`,`db`,`table`,`timevalue`),
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+CREATE TABLE IF NOT EXISTS `pma__table_uiprefs` (
+  `username` varchar(64) NOT NULL,
+  `db_name` varchar(64) NOT NULL,
+  `table_name` varchar(64) NOT NULL,
+  `prefs` text NOT NULL,
+  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`username`,`db_name`,`table_name`)
+)
+  COMMENT='Tables'' UI preferences'
+  DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
 
+-- --------------------------------------------------------
 
--- Estrutura da tabela `pma__navigationhiding`
-CREATE TABLE `pma__navigationhiding` (
-  `username` varchar(64) COLLATE utf8mb3_bin NOT NULL,
-  `item_name` varchar(64) COLLATE utf8mb3_bin NOT NULL,
-  `item_type` varchar(64) COLLATE utf8mb3_bin NOT NULL,
-  `db_name` varchar(64) COLLATE utf8mb3_bin NOT NULL,
-  `table_name` varchar(64) COLLATE utf8mb3_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='Hidden items of navigation tree';
+--
+-- Table structure for table `pma__relation`
+--
 
-ALTER TABLE `pma__navigationhiding`
-  ADD PRIMARY KEY (`username`,`item_name`,`item_type`,`db_name`,`table_name`);
+CREATE TABLE IF NOT EXISTS `pma__relation` (
+  `master_db` varchar(64) NOT NULL default '',
+  `master_table` varchar(64) NOT NULL default '',
+  `master_field` varchar(64) NOT NULL default '',
+  `foreign_db` varchar(64) NOT NULL default '',
+  `foreign_table` varchar(64) NOT NULL default '',
+  `foreign_field` varchar(64) NOT NULL default '',
+  PRIMARY KEY  (`master_db`,`master_table`,`master_field`),
+  KEY `foreign_field` (`foreign_db`,`foreign_table`)
+)
+  COMMENT='Relation table'
+  DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
 
+-- --------------------------------------------------------
 
--- Estrutura da tabela `pma__pdf_pages`
-CREATE TABLE `pma__pdf_pages` (
-  `db_name` varchar(64) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `page_nr` int(10) UNSIGNED NOT NULL,
-  `page_descr` varchar(50) CHARACTER SET utf8mb3 NOT NULL DEFAULT ''
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='PDF relation pages for phpMyAdmin';
+--
+-- Table structure for table `pma__table_coords`
+--
 
-ALTER TABLE `pma__pdf_pages`
-  ADD PRIMARY KEY (`page_nr`),
-  ADD KEY `db_name` (`db_name`),
-  MODIFY `page_nr` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+CREATE TABLE IF NOT EXISTS `pma__table_coords` (
+  `db_name` varchar(64) NOT NULL default '',
+  `table_name` varchar(64) NOT NULL default '',
+  `pdf_page_number` int(11) NOT NULL default '0',
+  `x` float unsigned NOT NULL default '0',
+  `y` float unsigned NOT NULL default '0',
+  PRIMARY KEY  (`db_name`,`table_name`,`pdf_page_number`)
+)
+  COMMENT='Table coordinates for phpMyAdmin PDF output'
+  DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
 
+-- --------------------------------------------------------
 
--- Estrutura da tabela `pma__recent`
-CREATE TABLE `pma__recent` (
-  `username` varchar(64) COLLATE utf8mb3_bin NOT NULL,
-  `tables` text COLLATE utf8mb3_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='Recently accessed tables';
+--
+-- Table structure for table `pma__table_info`
+--
 
-ALTER TABLE `pma__recent`
-  ADD PRIMARY KEY (`username`);
+CREATE TABLE IF NOT EXISTS `pma__table_info` (
+  `db_name` varchar(64) NOT NULL default '',
+  `table_name` varchar(64) NOT NULL default '',
+  `display_field` varchar(64) NOT NULL default '',
+  PRIMARY KEY  (`db_name`,`table_name`)
+)
+  COMMENT='Table information for phpMyAdmin'
+  DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
 
+-- --------------------------------------------------------
 
--- Estrutura da tabela `pma__relation`
-CREATE TABLE `pma__relation` (
-  `master_db` varchar(64) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `master_table` varchar(64) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `master_field` varchar(64) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `foreign_db` varchar(64) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `foreign_table` varchar(64) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `foreign_field` varchar(64) COLLATE utf8mb3_bin NOT NULL DEFAULT ''
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='Relation table';
+--
+-- Table structure for table `pma__tracking`
+--
 
-ALTER TABLE `pma__relation`
-  ADD PRIMARY KEY (`master_db`,`master_table`,`master_field`),
-  ADD KEY `foreign_field` (`foreign_db`,`foreign_table`);
-
-
--- Estrutura da tabela `pma__savedsearches`
-CREATE TABLE `pma__savedsearches` (
-  `id` int(5) UNSIGNED NOT NULL,
-  `username` varchar(64) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `db_name` varchar(64) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `search_name` varchar(64) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `search_data` text COLLATE utf8mb3_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='Saved searches';
-
-ALTER TABLE `pma__savedsearches`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `u_savedsearches_username_dbname` (`username`,`db_name`,`search_name`),
-  MODIFY `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT;
-
-
--- Estrutura da tabela `pma__table_coords`
-CREATE TABLE `pma__table_coords` (
-  `db_name` varchar(64) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `table_name` varchar(64) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `pdf_page_number` int(11) NOT NULL DEFAULT 0,
-  `x` float UNSIGNED NOT NULL DEFAULT 0,
-  `y` float UNSIGNED NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='Table coordinates for phpMyAdmin PDF output';
-
-ALTER TABLE `pma__table_coords`
-  ADD PRIMARY KEY (`db_name`,`table_name`,`pdf_page_number`);
-
-
--- Estrutura da tabela `pma__table_info`
-CREATE TABLE `pma__table_info` (
-  `db_name` varchar(64) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `table_name` varchar(64) COLLATE utf8mb3_bin NOT NULL DEFAULT '',
-  `display_field` varchar(64) COLLATE utf8mb3_bin NOT NULL DEFAULT ''
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='Table information for phpMyAdmin';
-
-ALTER TABLE `pma__table_info`
-  ADD PRIMARY KEY (`db_name`,`table_name`);
-
-
--- Estrutura da tabela `pma__table_uiprefs`
-CREATE TABLE `pma__table_uiprefs` (
-  `username` varchar(64) COLLATE utf8mb3_bin NOT NULL,
-  `db_name` varchar(64) COLLATE utf8mb3_bin NOT NULL,
-  `table_name` varchar(64) COLLATE utf8mb3_bin NOT NULL,
-  `prefs` text COLLATE utf8mb3_bin NOT NULL,
-  `last_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='Tables'' UI preferences';
-
-ALTER TABLE `pma__table_uiprefs`
-  ADD PRIMARY KEY (`username`,`db_name`,`table_name`);
-
-
--- Estrutura da tabela `pma__tracking`
-CREATE TABLE `pma__tracking` (
-  `db_name` varchar(64) COLLATE utf8mb3_bin NOT NULL,
-  `table_name` varchar(64) COLLATE utf8mb3_bin NOT NULL,
-  `version` int(10) UNSIGNED NOT NULL,
+CREATE TABLE IF NOT EXISTS `pma__tracking` (
+  `db_name` varchar(64) NOT NULL,
+  `table_name` varchar(64) NOT NULL,
+  `version` int(10) unsigned NOT NULL,
   `date_created` datetime NOT NULL,
   `date_updated` datetime NOT NULL,
-  `schema_snapshot` text COLLATE utf8mb3_bin NOT NULL,
-  `schema_sql` text COLLATE utf8mb3_bin DEFAULT NULL,
-  `data_sql` longtext COLLATE utf8mb3_bin DEFAULT NULL,
-  `tracking` set('UPDATE','REPLACE','INSERT','DELETE','TRUNCATE','CREATE DATABASE','ALTER DATABASE','DROP DATABASE','CREATE TABLE','ALTER TABLE','RENAME TABLE','DROP TABLE','CREATE INDEX','DROP INDEX','CREATE VIEW','ALTER VIEW','DROP VIEW') COLLATE utf8mb3_bin DEFAULT NULL,
-  `tracking_active` int(1) UNSIGNED NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='Database changes tracking for phpMyAdmin';
+  `schema_snapshot` text NOT NULL,
+  `schema_sql` text,
+  `data_sql` longtext,
+  `tracking` set('UPDATE','REPLACE','INSERT','DELETE','TRUNCATE','CREATE DATABASE','ALTER DATABASE','DROP DATABASE','CREATE TABLE','ALTER TABLE','RENAME TABLE','DROP TABLE','CREATE INDEX','DROP INDEX','CREATE VIEW','ALTER VIEW','DROP VIEW') default NULL,
+  `tracking_active` int(1) unsigned NOT NULL default '1',
+  PRIMARY KEY  (`db_name`,`table_name`,`version`)
+)
+  COMMENT='Database changes tracking for phpMyAdmin'
+  DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
 
-ALTER TABLE `pma__tracking`
-  ADD PRIMARY KEY (`db_name`,`table_name`,`version`);
+-- --------------------------------------------------------
 
+--
+-- Table structure for table `pma__userconfig`
+--
 
+CREATE TABLE IF NOT EXISTS `pma__userconfig` (
+  `username` varchar(64) NOT NULL,
+  `timevalue` timestamp NOT NULL default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `config_data` text NOT NULL,
+  PRIMARY KEY  (`username`)
+)
+  COMMENT='User preferences storage for phpMyAdmin'
+  DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
 
--- Estrutura da tabela `pma__userconfig`
-CREATE TABLE `pma__userconfig` (
-  `username` varchar(64) COLLATE utf8mb3_bin NOT NULL,
-  `timevalue` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `config_data` text COLLATE utf8mb3_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='User preferences storage for phpMyAdmin';
+-- --------------------------------------------------------
 
-ALTER TABLE `pma__userconfig`
-  ADD PRIMARY KEY (`username`);
+--
+-- Table structure for table `pma__users`
+--
 
+CREATE TABLE IF NOT EXISTS `pma__users` (
+  `username` varchar(64) NOT NULL,
+  `usergroup` varchar(64) NOT NULL,
+  PRIMARY KEY (`username`,`usergroup`)
+)
+  COMMENT='Users and their assignments to user groups'
+  DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
 
--- Estrutura da tabela `pma__usergroups`
-CREATE TABLE `pma__usergroups` (
-  `usergroup` varchar(64) COLLATE utf8mb3_bin NOT NULL,
-  `tab` varchar(64) COLLATE utf8mb3_bin NOT NULL,
-  `allowed` enum('Y','N') COLLATE utf8mb3_bin NOT NULL DEFAULT 'N'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='User groups with configured menu items';
+-- --------------------------------------------------------
 
-ALTER TABLE `pma__usergroups`
-  ADD PRIMARY KEY (`usergroup`,`tab`,`allowed`);
+--
+-- Table structure for table `pma__usergroups`
+--
 
+CREATE TABLE IF NOT EXISTS `pma__usergroups` (
+  `usergroup` varchar(64) NOT NULL,
+  `tab` varchar(64) NOT NULL,
+  `allowed` enum('Y','N') NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`usergroup`,`tab`,`allowed`)
+)
+  COMMENT='User groups with configured menu items'
+  DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
 
--- Estrutura da tabela `pma__users`
-CREATE TABLE `pma__users` (
-  `username` varchar(64) COLLATE utf8mb3_bin NOT NULL,
-  `usergroup` varchar(64) COLLATE utf8mb3_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_bin COMMENT='Users and their assignments to user groups';
+-- --------------------------------------------------------
 
-ALTER TABLE `pma__users`
-  ADD PRIMARY KEY (`username`,`usergroup`);
+--
+-- Table structure for table `pma__navigationhiding`
+--
 
+CREATE TABLE IF NOT EXISTS `pma__navigationhiding` (
+  `username` varchar(64) NOT NULL,
+  `item_name` varchar(64) NOT NULL,
+  `item_type` varchar(64) NOT NULL,
+  `db_name` varchar(64) NOT NULL,
+  `table_name` varchar(64) NOT NULL,
+  PRIMARY KEY (`username`,`item_name`,`item_type`,`db_name`,`table_name`)
+)
+  COMMENT='Hidden items of navigation tree'
+  DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
 
-commit;
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pma__savedsearches`
+--
+
+CREATE TABLE IF NOT EXISTS `pma__savedsearches` (
+  `id` int(5) unsigned NOT NULL auto_increment,
+  `username` varchar(64) NOT NULL default '',
+  `db_name` varchar(64) NOT NULL default '',
+  `search_name` varchar(64) NOT NULL default '',
+  `search_data` text NOT NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `u_savedsearches_username_dbname` (`username`,`db_name`,`search_name`)
+)
+  COMMENT='Saved searches'
+  DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pma__central_columns`
+--
+
+CREATE TABLE IF NOT EXISTS `pma__central_columns` (
+  `db_name` varchar(64) NOT NULL,
+  `col_name` varchar(64) NOT NULL,
+  `col_type` varchar(64) NOT NULL,
+  `col_length` text,
+  `col_collation` varchar(64) NOT NULL,
+  `col_isNull` boolean NOT NULL,
+  `col_extra` varchar(255) default '',
+  `col_default` text,
+  PRIMARY KEY (`db_name`,`col_name`)
+)
+  COMMENT='Central list of columns'
+  DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pma__designer_settings`
+--
+
+CREATE TABLE IF NOT EXISTS `pma__designer_settings` (
+  `username` varchar(64) NOT NULL,
+  `settings_data` text NOT NULL,
+  PRIMARY KEY (`username`)
+)
+  COMMENT='Settings related to Designer'
+  DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pma__export_templates`
+--
+
+CREATE TABLE IF NOT EXISTS `pma__export_templates` (
+  `id` int(5) unsigned NOT NULL AUTO_INCREMENT,
+  `username` varchar(64) NOT NULL,
+  `export_type` varchar(10) NOT NULL,
+  `template_name` varchar(64) NOT NULL,
+  `template_data` text NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `u_user_type_template` (`username`,`export_type`,`template_name`)
+)
+  COMMENT='Saved export templates'
+  DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
